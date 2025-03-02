@@ -13,7 +13,7 @@ import asyncio  # Add this import at the top with other imports
 import threading
 from concurrent.futures import ThreadPoolExecutor
 
-app_version = "v0.1.0"
+app_version = "v0.1.1"
 system_info = f"{platform.system()} {platform.architecture()[0]}"
 
 

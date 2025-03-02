@@ -1,6 +1,6 @@
 [project]
 name = "resourcemaxxing"
-version = "0.1.0"
+version = "0.1.1"
 description = "Resources not being used are resources wasted."
 authors = [
     { name = "Issac Liu", email = "issac@matchatea.dev" },

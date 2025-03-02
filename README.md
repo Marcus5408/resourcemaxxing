@@ -44,3 +44,13 @@ If you have any questions or concerns, please hesitate to contact us.
 ## What if I have a problem with ResourceMaxxing?
 
 If you have any problems with ResourceMaxxing, please check with a doctor immediately. You are hallucinating.
+
+## Release Notes
+
+### Version 0.1.0
+
+- Initial release
+
+### Version 0.1.1
+
+- Remove unused assets
