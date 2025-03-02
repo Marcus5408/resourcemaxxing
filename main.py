@@ -1,3 +1,5 @@
+from hmac import new
+from torch import ne
 from stdlog import log
 import tkinter as tk
 from tkinter import ttk
@@ -150,10 +152,10 @@ class App(tk.Tk):
         self.diskLabel = ttk.Label(self.resourcesUsedFrame, text="Disk: 0%")
         self.diskLabel.grid(row=5, column=0, sticky="w", pady=5)
 
-        self.apply_button = ttk.Checkbutton(
+        self.apply_button = ttk.Button(
             self.basic_tab,
-            text="Enabled",
-            command=self.apply_settings,
+            text="Apply Settings",
+            command=lambda: self.apply_settings("basic"),
         )
         self.apply_button.grid(row=1, column=1, padx=5, sticky="w")
 
@@ -246,7 +248,7 @@ class App(tk.Tk):
         self.apply_button = ttk.Button(
             self.advanced_tab,
             text="Apply Settings",
-            command=self.apply_settings,
+            command=lambda: self.apply_settings("advanced"),
         )
         self.apply_button.grid(row=1, column=1, padx=5, sticky="w")
 
@@ -254,13 +256,28 @@ class App(tk.Tk):
         self.adv_options_frame.grid_columnconfigure(2, weight=2)
         self.advResourcesUsedFrame.grid_columnconfigure(1, weight=1)
 
-    def apply_settings(self, mode: str, cpu: float, gpu: float, ram: float, network: float, disk: float):
+    async def apply_settings(self, mode: str, *args):
         """
         # run all the tests and apply the settings
         """
         
-        
-
+        # get int from args
+        # run cpu test
+        from maximalizer import ResourceMaximizer
+        maximizer = ResourceMaximizer()
+        if mode == "basic":
+            
+            intensity = int(self.radio_var.get())
+            await maximizer.run_basic(intensity)
+        elif mode == "advanced":
+            from maximalizer import ResourceMaximizer
+            
+            cpu = self.scale_vars["CPU"].get()
+            gpu = self.scale_vars["GPU"].get()
+            ram = self.scale_vars["RAM"].get()
+            network = self.scale_vars["Network"].get()
+            disk = self.scale_vars["Disk"].get()
+            await maximizer.run_advanced(cpu=cpu, gpu=gpu, ram=ram, network=network, disk=disk)
 
 if __name__ == "__main__":
     app = App()

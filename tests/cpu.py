@@ -12,8 +12,8 @@ def cpu_load(target_percent, duration=None):
     start_time = time.time()
     while True:
         # Calculate work/sleep ratio
-        work_time = 0.01 * (target_percent / 100)
-        sleep_time = 0.01 - work_time
+        work_time = 0.1 * (target_percent / 100)
+        sleep_time = 0.1 - work_time
         
         # Do useless work
         end_time = time.time() + work_time
@@ -27,13 +27,17 @@ def cpu_load(target_percent, duration=None):
         if duration and time.time() - start_time >= duration:
             break
 
-# Example usage for 50% CPU load for 10 seconds
+# Example usage for 90% CPU load for 10 seconds
 if __name__ == '__main__':
     # Use multiple cores
     cores = multiprocessing.cpu_count()
     processes = []
-    target_percent = 90  # Set CPU load to 50%
+    target_percent = 90  # Set CPU load to 90%
     for _ in range(cores):
         p = multiprocessing.Process(target=cpu_load, args=(target_percent,))
         p.start()
         processes.append(p)
+        
+    # Join processes
+    for p in processes:
+        p.join()
