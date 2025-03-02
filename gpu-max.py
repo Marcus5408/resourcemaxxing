@@ -67,15 +67,19 @@ def mps_load(duration=None):
             break
 
 
-if __name__ == "__main__":
+def runGPUtest(time=30):
     try:
         if torch.cuda.is_available():
             torch.cuda.set_device(0)  # Ensure primary GPU is used
-            cuda_load(30)
+            cuda_load(time)
         elif torch.backends.mps.is_available():
-            mps_load(30)
+            mps_load(time)
         else:
             print("No compatible GPU found.")
     except KeyboardInterrupt:
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
+
+
+if __name__ == "__main__":
+    runGPUtest(30)

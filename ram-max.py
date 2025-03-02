@@ -5,5 +5,5 @@ def consume_memory_precise(size_in_mb):
     return np.ones(bytes_count, dtype=np.int8)
 
 
-array = consume_memory_precise(1024*13)
+array = consume_memory_precise(1024*1024)
 input("Press Enter to release memory...")
