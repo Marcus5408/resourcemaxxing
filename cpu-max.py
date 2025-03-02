@@ -32,7 +32,7 @@ if __name__ == '__main__':
     # Use multiple cores
     cores = multiprocessing.cpu_count()
     processes = []
-    target_percent = 50  # Set CPU load to 50%
+    target_percent = 90  # Set CPU load to 50%
     for _ in range(cores):
         p = multiprocessing.Process(target=cpu_load, args=(target_percent,))
         p.start()
