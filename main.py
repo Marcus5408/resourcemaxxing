@@ -8,6 +8,7 @@ import subprocess
 import os
 import platform
 import psutil
+import GPUtil
 import asyncio  # Add this import at the top with other imports
 import threading
 from concurrent.futures import ThreadPoolExecutor
@@ -49,7 +50,7 @@ class App(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title(f"ResourceMaxxing {app_version} - {system_info}")
-        self.geometry("715x560")
+        self.geometry("720x560")
         self.resizable(True, True)
         
         # Configure grid weights
@@ -57,9 +58,6 @@ class App(tk.Tk):
         self.grid_rowconfigure(1, weight=1)
         self.grid_rowconfigure(2, weight=1)
         self.grid_columnconfigure(0, weight=1)
-
-        # make self transparent
-        # self.attributes("-alpha", 0.9)
 
         self.canvas = tk.Canvas(self, bg="teal")
         self.canvas.grid(row=0, column=0, rowspan=8, sticky="nsew")
@@ -192,11 +190,16 @@ class App(tk.Tk):
         net_usage = net_io.bytes_sent + net_io.bytes_recv
         net_text = f"Network: {format_bytes(net_usage)}/s"
         
+        # Get GPU usage
         try:
-            temp = psutil.sensors_temperatures()
-            gpu_temp = temp['coretemp'][0].current if 'coretemp' in temp else 'N/A'
+            if platform.system() == "Darwin" and platform.machine().startswith("arm"):
+                # Apple Silicon (M1, M2, etc.)
+                gpu_usage = 'BAD'  # Currently, no direct way to get GPU usage on Apple Silicon
+            else:
+                gpus = GPUtil.getGPUs()
+                gpu_usage = gpus[0].load * 100 if gpus else 'N/A'
         except:
-            gpu_temp = 'N/A'
+            gpu_usage = 'N/A'
             
         # Get disk usage and format it
         try:
@@ -205,19 +208,19 @@ class App(tk.Tk):
             disk_text = f"Disk: {format_bytes(disk_usage)}/s"
         except:
             disk_text = "Disk: N/A"
-
+    
         # Update basic tab labels
         self.basic_cpuLabel.config(text=f"CPU: {cpu}%")
         self.basic_ramLabel.config(text=f"RAM: {ram}%")
         self.basic_networkLabel.config(text=net_text)
-        self.basic_gpuLabel.config(text=f"GPU: {gpu_temp}°C")
+        self.basic_gpuLabel.config(text=f"GPU: {gpu_usage}%")
         self.basic_diskLabel.config(text=disk_text)
-
+    
         # Update advanced tab labels
         self.adv_cpuLabel.config(text=f"CPU: {cpu}%")
         self.adv_ramLabel.config(text=f"RAM: {ram}%")
         self.adv_networkLabel.config(text=net_text)
-        self.adv_gpuLabel.config(text=f"GPU: {gpu_temp}°C")
+        self.adv_gpuLabel.config(text=f"GPU: {gpu_usage}%")
         self.adv_diskLabel.config(text=disk_text)
         
         self.after(1000, self.update_frame)  # Update every second
