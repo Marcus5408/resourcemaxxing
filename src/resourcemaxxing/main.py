@@ -13,7 +13,7 @@ import asyncio  # Add this import at the top with other imports
 import threading
 from concurrent.futures import ThreadPoolExecutor
 
-app_version = "v0.1.1"
+app_version = "v0.1.2"
 system_info = f"{platform.system()} {platform.architecture()[0]}"
 
 
@@ -411,11 +411,11 @@ class App(tk.Tk):
 
 if __name__ == "__main__":
     app = App()
-    open_image("catthatresourcedmaxxed.jpg")
+    open_image(f"{__file__.removesuffix("/main.py")}/catthatresourcedmaxxed.jpg")
     app.mainloop()
 
 
 def main():
     app = App()
-    open_image("catthatresourcedmaxxed.jpg")
+    open_image(f"{__file__.removesuffix("/main.py")}/catthatresourcedmaxxed.jpg")
     app.mainloop()

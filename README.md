@@ -70,3 +70,7 @@ If you have any problems with ResourceMaxxing, please check with a doctor immedi
 ### Version 0.1.1
 
 - Remove unused assets
+
+### Version 0.1.2
+
+- Fix lack of cat image on launch
