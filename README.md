@@ -12,7 +12,7 @@ ResourceMaxxing is a project that aims to help you get the most out of your comp
 
 ## Where can I see a demo of ResourceMaxxing?
 
-!
+![Demo Video](https://github.com/Marcus5408/resourcemaxxing/blob/main/demo.mp4)
 
 ## How does ResourceMaxxing work?
 
