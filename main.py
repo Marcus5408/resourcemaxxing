@@ -49,7 +49,7 @@ class App(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title(f"ResourceMaxxing {app_version} - {system_info}")
-        self.geometry("700x560")
+        self.geometry("715x560")
         self.resizable(True, True)
         
         # Configure grid weights
@@ -97,22 +97,13 @@ class App(tk.Tk):
         self.draw_bg(event.width, event.height)
 
     def create_notebook(self):
-        s = ttk.Style()
-        s.configure("new.TFrame", background="", borderwidth=0)
-        s.configure("new.TNotebook", background="", borderwidth=0)
-        s.configure(
-            "TNotebook.Tab", padding=[10, 5], background="lightblue", borderwidth=0
-        )
 
         self.notebook = ttk.Notebook(self)
-        self.notebook.configure(style="new.TNotebook")
 
         self.basic_tab = ttk.Frame(self.notebook)
-        self.basic_tab.configure(style="new.TFrame")
         self.notebook.add(self.basic_tab, text="Basic Controls")
 
         self.advanced_tab = ttk.Frame(self.notebook)
-        self.advanced_tab.configure(style="new.TFrame")
         self.notebook.add(self.advanced_tab, text="Advanced Controls")
 
         self.notebook.place(
@@ -123,7 +114,7 @@ class App(tk.Tk):
         self.radio_var = tk.StringVar(value="1")
         self.radio_frame = ttk.Labelframe(self.basic_tab, text="Resource Maxxing Level")
         self.radio_frame.grid(
-            row=0, rowspan=2, column=0, pady=(5, 10), padx=5, sticky="w"
+            row=0, rowspan=3, column=0, pady=(5, 10), padx=5, sticky="nsew"
         )
         options = {
             "Weak Beta": "You are weak and want weak resource maxxing, this sadly isnt as taxing (get it fanum tax lol) on your resources so you can watch more skibidi!!!",
@@ -177,7 +168,7 @@ class App(tk.Tk):
             text="Apply Settings",
             command=lambda: self.apply_settings("basic"),
         )
-        self.apply_button.grid(row=1, column=1, padx=5, sticky="w")
+        self.apply_button.grid(row=1, column=1, padx=5, sticky="sew")
 
         self.cancel_button = ttk.Button(
             self.basic_tab,
@@ -185,7 +176,7 @@ class App(tk.Tk):
             command=self.cancel_operation,
             state="disabled"
         )
-        self.cancel_button.grid(row=1, column=1, padx=(80, 5), sticky="w")
+        self.cancel_button.grid(row=2, column=1, padx=5, sticky="new")
 
         self.radio_frame.grid_columnconfigure(2, weight=2)
         self.resourcesUsedFrame.grid_columnconfigure(1, weight=1)
@@ -241,28 +232,28 @@ class App(tk.Tk):
             self.advanced_tab, text="Resource Maxxing Level"
         )
         self.adv_options_frame.grid(
-            row=0, rowspan=2, column=0, pady=(5, 10), padx=5, sticky="w"
+            row=0, rowspan=3, column=0, pady=(5, 10), padx=5, sticky="w"
         )
 
         options = {
             "CPU": {
-                "min": 50.00,
+                "min": 0.00,
                 "max": 100.00,
             },
             "GPU": {
-                "min": 50.00,
+                "min": 0.00,
                 "max": 100.00,
             },
             "RAM": {
-                "min": 50.00,
+                "min": 0.00,
                 "max": 100.00,
             },
             "Network": {
-                "min": 50.00,
+                "min": 0.00,
                 "max": 100.00,
             },
             "Disk": {
-                "min": 50.00,
+                "min": 0.00,
                 "max": 100.00,
             },
         }
@@ -278,8 +269,8 @@ class App(tk.Tk):
             self.scale_vars[key] = tk.DoubleVar(value=value["min"])
             slider = ttk.Scale(
                 self.adv_options_frame,
-                from_=value["min"],
-                to=value["max"],
+                from_=value["max"],
+                to=value["min"],
                 orient="vertical",
                 length=200,
                 variable=self.scale_vars[key],
@@ -317,7 +308,7 @@ class App(tk.Tk):
             text="Apply Settings",
             command=lambda: self.apply_settings("advanced"),
         )
-        self.apply_button.grid(row=1, column=1, padx=5, sticky="w")
+        self.apply_button.grid(row=1, column=1, padx=5, sticky="sew")
 
         self.adv_cancel_button = ttk.Button(
             self.advanced_tab,
@@ -325,7 +316,7 @@ class App(tk.Tk):
             command=self.cancel_operation,
             state="disabled"
         )
-        self.adv_cancel_button.grid(row=1, column=1, padx=(80, 5), sticky="w")
+        self.adv_cancel_button.grid(row=2, column=1, padx=5, sticky="new")
 
         self.adv_options_frame.grid_columnconfigure(2, weight=2)
         self.advResourcesUsedFrame.grid_columnconfigure(1, weight=1)
