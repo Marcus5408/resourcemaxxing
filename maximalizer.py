@@ -12,6 +12,22 @@ from tests.net import network_load  # Import the network load function
 from tests.ram import consume_memory_precise  # Import the RAM load function
 
 
+def cpu_worker(target_percent: float, duration: Optional[float]):
+    start_time = time.time()
+    while True:
+        work_time = 0.01 * (target_percent / 100)
+        sleep_time = 0.01 - work_time
+
+        end_time = time.time() + work_time
+        while time.time() < end_time:
+            _ = 1 + 1
+
+        time.sleep(max(0, sleep_time))
+
+        if duration and time.time() - start_time >= duration:
+            break
+
+
 class ResourceMaximizer:
     def __init__(self):
         self.chunks = []  # For network data
@@ -30,7 +46,7 @@ class ResourceMaximizer:
         cores = multiprocessing.cpu_count()
         for _ in range(cores):
             p = multiprocessing.Process(
-                target=cpu_load, args=(target_percent, duration)
+                target=cpu_worker, args=(target_percent, duration)
             )
             p.start()
             self.cpu_processes.append(p)
@@ -132,6 +148,6 @@ async def main():
     tier = int(input("Enter test tier (1-5): "))
     await maximizer.run_basic(tier)
 
-
 if __name__ == "__main__":
-    asyncio.run(main())
+    maximizer = ResourceMaximizer()
+    asyncio.run(maximizer.run_advanced(cpu=90, ram=8192, network=500, gpu=30, disk=1024))
