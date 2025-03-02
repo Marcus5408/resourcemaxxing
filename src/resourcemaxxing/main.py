@@ -39,7 +39,7 @@ def open_image(image_path):
 
 def format_bytes(bytes_value):
     """Convert bytes to human readable format"""
-    for unit in ['B', 'KB', 'MB', 'GB', 'TB']:
+    for unit in ["B", "KB", "MB", "GB", "TB"]:
         if bytes_value < 1024:
             return f"{bytes_value:.1f}{unit}"
         bytes_value /= 1024
@@ -52,7 +52,7 @@ class App(tk.Tk):
         self.title(f"ResourceMaxxing {app_version} - {system_info}")
         self.geometry("720x560")
         self.resizable(True, True)
-        
+
         # Configure grid weights
         self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=1)
@@ -172,7 +172,7 @@ class App(tk.Tk):
             self.basic_tab,
             text="Cancel",
             command=self.cancel_operation,
-            state="disabled"
+            state="disabled",
         )
         self.cancel_button.grid(row=2, column=1, padx=5, sticky="new")
 
@@ -184,23 +184,25 @@ class App(tk.Tk):
         # Get resource values
         cpu = psutil.cpu_percent()
         ram = psutil.virtual_memory().percent
-        
+
         # Get network usage and format it
         net_io = psutil.net_io_counters()
         net_usage = net_io.bytes_sent + net_io.bytes_recv
         net_text = f"Network: {format_bytes(net_usage)}/s"
-        
+
         # Get GPU usage
         try:
             if platform.system() == "Darwin" and platform.machine().startswith("arm"):
                 # Apple Silicon (M1, M2, etc.)
-                gpu_usage = 'BAD'  # Currently, no direct way to get GPU usage on Apple Silicon
+                gpu_usage = (
+                    "BAD"  # Currently, no direct way to get GPU usage on Apple Silicon
+                )
             else:
                 gpus = GPUtil.getGPUs()
-                gpu_usage = gpus[0].load * 100 if gpus else 'N/A'
+                gpu_usage = gpus[0].load * 100 if gpus else "N/A"
         except:
-            gpu_usage = 'N/A'
-            
+            gpu_usage = "N/A"
+
         # Get disk usage and format it
         try:
             disk_io = psutil.disk_io_counters()
@@ -208,21 +210,21 @@ class App(tk.Tk):
             disk_text = f"Disk: {format_bytes(disk_usage)}/s"
         except:
             disk_text = "Disk: N/A"
-    
+
         # Update basic tab labels
         self.basic_cpuLabel.config(text=f"CPU: {cpu}%")
         self.basic_ramLabel.config(text=f"RAM: {ram}%")
         self.basic_networkLabel.config(text=net_text)
         self.basic_gpuLabel.config(text=f"GPU: {gpu_usage}%")
         self.basic_diskLabel.config(text=disk_text)
-    
+
         # Update advanced tab labels
         self.adv_cpuLabel.config(text=f"CPU: {cpu}%")
         self.adv_ramLabel.config(text=f"RAM: {ram}%")
         self.adv_networkLabel.config(text=net_text)
         self.adv_gpuLabel.config(text=f"GPU: {gpu_usage}%")
         self.adv_diskLabel.config(text=disk_text)
-        
+
         self.after(1000, self.update_frame)  # Update every second
 
     def create_advanced_widgets(self):
@@ -263,10 +265,17 @@ class App(tk.Tk):
 
         self.scale_vars = {}
         for idx, (key, value) in enumerate(options.items()):
-            label = ttk.Label(self.adv_options_frame, text=key, font=("TkDefaultFont", 10, "bold"), anchor="center")
+            label = ttk.Label(
+                self.adv_options_frame,
+                text=key,
+                font=("TkDefaultFont", 10, "bold"),
+                anchor="center",
+            )
             label.grid(row=0, column=idx, padx=5, pady=5, sticky="we")
-            
-            maxVal = ttk.Label(self.adv_options_frame, text=value["max"], anchor="center")
+
+            maxVal = ttk.Label(
+                self.adv_options_frame, text=value["max"], anchor="center"
+            )
             maxVal.grid(row=1, column=idx, padx=5, pady=5, sticky="we")
 
             self.scale_vars[key] = tk.DoubleVar(value=value["min"])
@@ -279,14 +288,18 @@ class App(tk.Tk):
                 variable=self.scale_vars[key],
             )
             slider.grid(row=2, column=idx, padx=5, pady=5, sticky="we")
-            
-            minVal = ttk.Label(self.adv_options_frame, text=value["min"], anchor="center")
+
+            minVal = ttk.Label(
+                self.adv_options_frame, text=value["min"], anchor="center"
+            )
             minVal.grid(row=3, column=idx, padx=5, pady=5, sticky="we")
-            
+
             self.adv_options_frame.grid_columnconfigure(idx, weight=1)
             self.adv_options_frame.grid_columnconfigure(idx, minsize=75)
 
-        self.advResourcesUsedFrame = ttk.Labelframe(self.advanced_tab, text="Resources Used")
+        self.advResourcesUsedFrame = ttk.Labelframe(
+            self.advanced_tab, text="Resources Used"
+        )
         self.advResourcesUsedFrame.grid(
             row=0, column=1, pady=(5, 10), padx=5, sticky="nsew"
         )
@@ -297,7 +310,9 @@ class App(tk.Tk):
         self.adv_ramLabel = ttk.Label(self.advResourcesUsedFrame, text="RAM: 0%")
         self.adv_ramLabel.grid(row=2, column=0, sticky="w", pady=5)
 
-        self.adv_networkLabel = ttk.Label(self.advResourcesUsedFrame, text="Network: 0%")
+        self.adv_networkLabel = ttk.Label(
+            self.advResourcesUsedFrame, text="Network: 0%"
+        )
         self.adv_networkLabel.grid(row=3, column=0, sticky="w", pady=5)
 
         self.adv_gpuLabel = ttk.Label(self.advResourcesUsedFrame, text="GPU: 0%")
@@ -317,7 +332,7 @@ class App(tk.Tk):
             self.advanced_tab,
             text="Cancel",
             command=self.cancel_operation,
-            state="disabled"
+            state="disabled",
         )
         self.adv_cancel_button.grid(row=2, column=1, padx=5, sticky="new")
 
@@ -344,7 +359,7 @@ class App(tk.Tk):
             self.maximizer.stop()
             self.maximizer = None
         self.create_executor()
-        
+
         self.running = True
         self.apply_button.config(state="disabled")
         self.cancel_button.config(state="normal")
@@ -353,6 +368,7 @@ class App(tk.Tk):
         def run_in_thread():
             async def run_maximizer():
                 from maximalizer import ResourceMaximizer
+
                 self.maximizer = ResourceMaximizer()
                 try:
                     if mode == "basic":
@@ -364,15 +380,20 @@ class App(tk.Tk):
                         ram = self.scale_vars["RAM"].get()
                         network = self.scale_vars["Network"].get()
                         disk = self.scale_vars["Disk"].get()
-                        await self.maximizer.run_advanced(cpu=cpu, gpu=gpu, ram=ram, network=network, disk=disk)
+                        await self.maximizer.run_advanced(
+                            cpu=cpu, gpu=gpu, ram=ram, network=network, disk=disk
+                        )
                 finally:
                     self.running = False
                     self.maximizer = None
-                    self.after(0, lambda: [
-                        self.apply_button.config(state="normal"),
-                        self.cancel_button.config(state="disabled"),
-                        self.adv_cancel_button.config(state="disabled")
-                    ])
+                    self.after(
+                        0,
+                        lambda: [
+                            self.apply_button.config(state="normal"),
+                            self.cancel_button.config(state="disabled"),
+                            self.adv_cancel_button.config(state="disabled"),
+                        ],
+                    )
                     self.create_executor()  # Create new executor for next run
 
             asyncio.run(run_maximizer())
@@ -387,7 +408,14 @@ class App(tk.Tk):
             self.maximizer.stop()
         super().destroy()
 
+
 if __name__ == "__main__":
+    app = App()
+    open_image("catthatresourcedmaxxed.jpg")
+    app.mainloop()
+
+
+def main():
     app = App()
     open_image("catthatresourcedmaxxed.jpg")
     app.mainloop()

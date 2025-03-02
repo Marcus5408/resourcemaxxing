@@ -2,7 +2,7 @@
 
 Because unused resources are wasted resources.
 
-![cat that resource maxxed their pc](catthatresourcedmaxxed.jpg)
+![cat that resource maxxed their pc](src/resourcemaxxing/catthatresourcedmaxxed.jpg)
 
 Made for [Hack Club Scrapyard](https://scrapyard.hackclub.com/) by [Issac Liu](https://github.com/Marcus5408) and [Jan Koch](https://github.com/meepstertron).
 

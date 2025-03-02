@@ -4,9 +4,10 @@ version = "0.1.0"
 description = "Resources not being used are resources wasted."
 authors = [
     { name = "Issac Liu", email = "issac@matchatea.dev" },
-    { name = "Jan Koch", email = "meepstertron@gmail.com" }
+    { name = "Jan Koch", email = "meepstertron@gmail.com" },
 ]
 readme = "README.md"
+license = "MIT"
 requires-python = ">=3.13"
 dependencies = [
     "aiohttp>=3.11.13",
@@ -16,4 +17,8 @@ dependencies = [
     "psutil>=7.0.0",
     "tk>=0.1.0",
     "torch>=2.6.0",
+    "twine>=6.1.0",
 ]
+
+[project.scripts]
+resourcemaxxing = "resourcemaxxing.main:main"
