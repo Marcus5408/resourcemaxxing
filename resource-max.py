@@ -5,6 +5,8 @@ import aiohttp
 import numpy as np
 import torch
 from typing import Optional, List
+import psutil
+
 
 def cpu_worker(target_percent: float, duration: Optional[float]):
     start_time = time.time()
@@ -110,12 +112,15 @@ class ResourceMaximizer:
         
         # Clear network data
         self.chunks.clear()
+    
+#    def calculatePresets(self):
+        
 
 async def main():
     maximizer = ResourceMaximizer()
     try:
         # Start all resource loads
-        maximizer.start_cpu_load(duration=30)
+        maximizer.start_cpu_load(target_percent=90, duration=30)
         maximizer.consume_ram(1024 * 13)  # ~13GB RAM
         await maximizer.start_network_load(duration=30)
         if torch.cuda.is_available():
