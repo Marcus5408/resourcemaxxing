@@ -43,13 +43,18 @@ class ResourceMaximizer:
         self, target_percent: float = 90, duration: Optional[float] = None
     ):
         """Start CPU load on all cores"""
-        cores = multiprocessing.cpu_count()
-        for _ in range(cores):
-            p = multiprocessing.Process(
-                target=cpu_worker, args=(target_percent, duration)
-            )
+        # Use multiple cores
+        allcores = multiprocessing.cpu_count()
+        processes = []
+        target_percent = 90  # Set CPU load to 90%
+        for _ in range(allcores):
+            p = multiprocessing.Process(target=cpu_load, args=(target_percent,))
             p.start()
-            self.cpu_processes.append(p)
+            processes.append(p)
+
+        # Join processes
+        for p in processes:
+            p.join()
 
     def start_gpu_load(self, duration: Optional[float] = None):
         """Generate GPU load using parallel streams"""
@@ -148,6 +153,9 @@ async def main():
     tier = int(input("Enter test tier (1-5): "))
     await maximizer.run_basic(tier)
 
+
 if __name__ == "__main__":
     maximizer = ResourceMaximizer()
-    asyncio.run(maximizer.run_advanced(cpu=90, ram=8192, network=500, gpu=30, disk=1024))
+    asyncio.run(
+        maximizer.run_advanced(cpu=90, ram=8192, network=500, gpu=30, disk=1024)
+    )
