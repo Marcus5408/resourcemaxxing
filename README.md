@@ -40,8 +40,14 @@ ResourceMaxxing requires the following system requirements:
 - **GPU:** NVIDIA GeForce RTX 5090 32GB or better
 - **RAM:** 1TB GDDR7 or better
 - **Storage:** 20TB NVMe SSD in Raid 0 or better
-- **OS:** Hannah Montana Linux or better
+- **OS:** Hannah Montana Linux, Windows 2.9, MacOS System 2 or better
 - **Other:** Must be Hack Club Scrapyard and [Zach Latta](https://zachlatta.com) approved
+
+Note: If your name does not include a vowel in the first 3 letters, you may need to install additional drivers on your system in order to use ResourceMaxxing.
+
+Note: If you are a cat, this software cannot be used as a substitute for salmon.
+
+Note: If you are the 3rd floor of the Hack Club HQ, please consider moving to the 4th floor before use.
 
 ## How can I contribute to ResourceMaxxing?
 
