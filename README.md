@@ -20,7 +20,17 @@ ResourceMaxxing works by using the latest in AI-enhanced, neural-engine processe
 
 ## How can I use ResourceMaxxing?
 
-To use ResourceMaxxing, simply download the binary from the releases tab and run it. Our software will automatically optimize your computer for maximum performance, allowing you to get the most out of your computer.
+To use ResourceMaxxing, simply install via pip:
+
+```bash
+pip install resourcemaxxing
+```
+
+Then run the application:
+
+```bash
+resourcemaxxing
+```
 
 ## What are the system requirements for ResourceMaxxing?
 
