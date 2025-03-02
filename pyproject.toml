@@ -1,10 +1,15 @@
 [project]
-name = "resource-maxxing"
+name = "resourcemaxxing"
 version = "0.1.0"
-description = "Add your description here"
+description = "Resources not being used are resources wasted."
+authors = [
+    { name = "Issac Liu", email = "issac@matchatea.dev" },
+    { name = "Jan Koch", email = "meepstertron@gmail.com" }
+]
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "aiohttp>=3.11.13",
     "colored>=2.3.0",
     "numpy>=2.2.3",
     "tk>=0.1.0",
