@@ -34,6 +34,21 @@ class ResourceMaximizer:
         self.matrices = []  # For GPU data
         self.memory_arrays = []  # For RAM data
         self.cpu_processes = []  # For CPU processes
+        self.running = False
+        self.should_stop = False
+        self.cpu_loader = None
+        self.event_loop = None
+        from tests.cpu import CPULoader
+        self.cpu_loader = CPULoader()
+
+    def stop(self):
+        """Signal the maximizer to stop"""
+        self.should_stop = True
+        if self.cpu_loader:
+            self.cpu_loader.stop()
+        if self.event_loop:
+            self.event_loop.stop()
+        self.cleanup()
 
     async def start_network_load(self, duration: Optional[float] = None):
         """Generate network load using test servers"""
@@ -43,18 +58,7 @@ class ResourceMaximizer:
         self, target_percent: float = 90, duration: Optional[float] = None
     ):
         """Start CPU load on all cores"""
-        # Use multiple cores
-        allcores = multiprocessing.cpu_count()
-        processes = []
-        target_percent = 90  # Set CPU load to 90%
-        for _ in range(allcores):
-            p = multiprocessing.Process(target=cpu_load, args=(target_percent,))
-            p.start()
-            processes.append(p)
-
-        # Join processes
-        for p in processes:
-            p.join()
+        self.cpu_loader.start(target_percent, duration)
 
     def start_gpu_load(self, duration: Optional[float] = None):
         """Generate GPU load using parallel streams"""
@@ -73,6 +77,9 @@ class ResourceMaximizer:
 
     def cleanup(self):
         """Clean up all resources"""
+        if self.cpu_loader:
+            self.cpu_loader.stop()
+            
         # Stop CPU processes
         for p in self.cpu_processes:
             p.terminate()
@@ -91,6 +98,9 @@ class ResourceMaximizer:
 
     async def run_basic(self, tier: int):
         """Run a specific tier of the test"""
+        self.should_stop = False
+        self.running = True
+        self.event_loop = asyncio.get_event_loop()
         tiers = {
             1: {"cpu": 50, "ram": 1024, "network": 10, "gpu": 10},
             2: {"cpu": 70, "ram": 2048, "network": 20, "gpu": 20},
@@ -101,6 +111,8 @@ class ResourceMaximizer:
 
         config = tiers[tier]
         try:
+            if self.should_stop:
+                return
             self.start_cpu_load(
                 target_percent=config["cpu"], duration=config["network"]
             )
@@ -110,12 +122,19 @@ class ResourceMaximizer:
         except KeyboardInterrupt:
             pass
         finally:
+            self.event_loop = None
+            self.running = False
             self.cleanup()
 
     # support for running the test advanced (custom configuration)
     async def run_advanced(self, cpu: int, ram: int, network: int, gpu: int, disk: int):
         """Run a custom configuration of the test"""
+        self.should_stop = False
+        self.running = True
+        self.event_loop = asyncio.get_event_loop()
         try:
+            if self.should_stop:
+                return
             self.start_cpu_load(target_percent=cpu, duration=network)
             self.start_gpu_load(duration=gpu)
             self.consume_ram(ram)
@@ -124,6 +143,8 @@ class ResourceMaximizer:
         except KeyboardInterrupt:
             pass
         finally:
+            self.event_loop = None
+            self.running = False
             self.cleanup()
 
     def start_disk_load(self, size_in_mb: int, duration: Optional[float] = None):

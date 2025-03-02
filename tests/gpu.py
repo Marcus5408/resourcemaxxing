@@ -1,8 +1,24 @@
 import torch
 import time
+import platform
 
+def get_gpu_backend():
+    """Detect available GPU backend"""
+    if platform.system() == "Windows":
+        try:
+            import pynvml
+            pynvml.nvmlInit()
+            return "cuda" if torch.cuda.is_available() else None
+        except:
+            return None
+    else:
+        if torch.cuda.is_available():
+            return "cuda"
+        elif torch.backends.mps.is_available():
+            return "mps"
+    return None
 
-def cuda_load(duration=None):
+def cuda_load(duration=None, stop_event=None):
     """
     Generate constant GPU load using parallel streams and continuous computation
     """
@@ -22,6 +38,9 @@ def cuda_load(duration=None):
     torch.backends.cudnn.benchmark = False
 
     while True:
+        if stop_event and stop_event.is_set():
+            break
+
         for stream_idx, stream in enumerate(streams):
             with torch.cuda.stream(stream):
                 for i in range(num_matrices):
@@ -41,7 +60,7 @@ def cuda_load(duration=None):
             break
 
 
-def mps_load(duration=None):
+def mps_load(duration=None, stop_event=None):
     """
     Generate constant GPU load using continuous computation on Apple Silicon
     """
@@ -56,6 +75,9 @@ def mps_load(duration=None):
     matrices = [torch.randn(size, size, device="mps") for _ in range(num_matrices)]
 
     while True:
+        if stop_event and stop_event.is_set():
+            break
+
         for i in range(num_matrices):
             # Complex chain of operations
             matrices[i] = torch.matmul(matrices[i], matrices[(i + 1) % num_matrices])
@@ -69,10 +91,11 @@ def mps_load(duration=None):
 
 def runGPUtest(time=30):
     try:
-        if torch.cuda.is_available():
+        backend = get_gpu_backend()
+        if backend == "cuda":
             torch.cuda.set_device(0)  # Ensure primary GPU is used
             cuda_load(time)
-        elif torch.backends.mps.is_available():
+        elif backend == "mps":
             mps_load(time)
         else:
             print("No compatible GPU found.")
